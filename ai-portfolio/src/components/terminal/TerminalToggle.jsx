@@ -18,8 +18,13 @@ const TerminalToggle = () => {
     >
       <Terminal className="w-6 h-6 text-primary group-hover:rotate-12 transition-transform" />
       
-      {/* Ripple effect */}
+      {/* Pulsing ring effect */}
       <div className="absolute inset-0 rounded-full bg-accent-cyan/20 animate-ping opacity-0 group-hover:opacity-100" />
+      
+      {/* Tooltip */}
+      <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-secondary text-xs text-accent-cyan rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+        Open Terminal
+      </div>
     </motion.button>
   )
 }
