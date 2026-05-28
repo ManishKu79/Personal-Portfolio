@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minimize2, Send, Mic, Bot, Sparkles, ChevronUp, ChevronDown } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
 import { v4 as uuidv4 } from 'uuid'
 import useStore from '../../store/useStore'
 
@@ -67,57 +66,59 @@ const Assistant = () => {
     else if (lowerMessage.includes('project') || lowerMessage.includes('work')) {
       response = `🎯 **Manish's Featured Projects:**
 
-1. **AI-Powered Portfolio** - Interactive 3D portfolio with AI assistant
-   - React Three Fiber, OpenAI API, Tailwind CSS
+1. AI-Powered Portfolio - Interactive 3D portfolio with AI assistant
+   → React Three Fiber, OpenAI API, Tailwind CSS
 
-2. **Neural Style Transfer** - Real-time art style transfer app
-   - TensorFlow.js, React, Flask
+2. Neural Style Transfer - Real-time art style transfer app
+   → TensorFlow.js, React, Flask
 
-3. **Predictive Analytics Dashboard** - ML-powered sales forecasting
-   - Python, Scikit-learn, D3.js
+3. Predictive Analytics Dashboard - ML-powered sales forecasting
+   → Python, Scikit-learn, D3.js
 
-4. **3D Product Configurator** - Real-time customization tool
-   - Three.js, React, Node.js
+4. 3D Product Configurator - Real-time customization tool
+   → Three.js, React, Node.js
 
 Would you like details about any specific project?`
     }
     else if (lowerMessage.includes('skill') || lowerMessage.includes('technology') || lowerMessage.includes('tech stack')) {
       response = `💻 **Technical Skills:**
 
-**Frontend:** React 19, Next.js, Three.js, Tailwind CSS, Framer Motion
-**AI/ML:** TensorFlow, PyTorch, OpenAI API, LangChain, Computer Vision
-**Backend:** Node.js, Python, Django, FastAPI
-**Database:** PostgreSQL, MongoDB, Redis
-**DevOps:** Docker, AWS, Vercel, GitHub Actions
-**3D & Design:** WebGL, Blender, Figma
+Frontend: React 19, Next.js, Three.js, Tailwind CSS, Framer Motion
+AI/ML: TensorFlow, PyTorch, OpenAI API, LangChain, Computer Vision
+Backend: Node.js, Python, Django, FastAPI
+Database: PostgreSQL, MongoDB, Redis
+DevOps: Docker, AWS, Vercel, GitHub Actions
+3D & Design: WebGL, Blender, Figma
 
 Manish is particularly passionate about combining AI with immersive web experiences!`
     }
     else if (lowerMessage.includes('experience') || lowerMessage.includes('background') || lowerMessage.includes('career')) {
       response = `📈 **Professional Experience:**
 
-🔹 **Senior AI Engineer** @ TechCorp AI Solutions (2023-Present)
-   - Lead AI model deployment for 5+ projects
-   - Improved model accuracy by 35%
+Senior AI Engineer @ TechCorp AI Solutions (2023-Present)
+→ Lead AI model deployment for 5+ projects
+→ Improved model accuracy by 35%
+→ Mentored 3 junior developers
 
-🔹 **Full Stack Developer** @ WebInnovate Labs (2021-2023)
-   - Built 10+ production web applications
-   - Reduced load time by 60%
+Full Stack Developer @ WebInnovate Labs (2021-2023)
+→ Built 10+ production web applications
+→ Reduced load time by 60%
+→ Implemented CI/CD pipelines
 
-🔹 **Freelance Developer** (2019-2021)
-   - Delivered 20+ client projects
-   - 100% client satisfaction rate
+Freelance Developer (2019-2021)
+→ Delivered 20+ client projects
+→ 100% client satisfaction rate
 
 Manish has 5+ years of experience in software development!`
     }
     else if (lowerMessage.includes('contact') || lowerMessage.includes('email') || lowerMessage.includes('reach')) {
       response = `📬 **Contact Information:**
 
-📧 Email: manish.kumar@example.com
-💼 LinkedIn: /in/manishkumar
-🐙 GitHub: github.com/manishkumar
-🐦 Twitter: @manishkumar
-🌐 Portfolio: manishkumar.dev
+Email: manish.kumar@example.com
+LinkedIn: /in/manishkumar
+GitHub: github.com/manishkumar
+Twitter: @manishkumar
+Portfolio: manishkumar.dev
 
 💬 Open for collaborations, freelance work, and opportunities!`
     }
@@ -129,49 +130,49 @@ Manish has 5+ years of experience in software development!`
 • 342 Forks 🍴
 • 1,847 Contributions this year
 
-**Top Languages:** JavaScript (45%), Python (30%), TypeScript (15%), Others (10%)
+Top Languages: JavaScript (45%), Python (30%), TypeScript (15%), Others (10%)
 
-**Recent Activity:**
-• Created: AI-Portfolio (2 days ago)
-• Starred: awesome-machine-learning (5 days ago)
-• PR merged: three.js-examples (1 week ago)`
+Recent Activity:
+→ Created: AI-Portfolio (2 days ago)
+→ Starred: awesome-machine-learning (5 days ago)
+→ PR merged: three.js-examples (1 week ago)`
     }
     else if (lowerMessage.includes('education') || lowerMessage.includes('study') || lowerMessage.includes('degree')) {
       response = `🎓 **Education:**
 
-**Master's in Computer Science** (AI Specialization)
+Master's in Computer Science (AI Specialization)
 Indian Institute of Technology (IIT)
 2020 - 2022 | CGPA: 9.2/10
 
-**Bachelor's in Computer Engineering**
+Bachelor's in Computer Engineering
 National Institute of Technology (NIT)
 2016 - 2020 | CGPA: 8.9/10
 
-**Certifications:**
-• Advanced Machine Learning (Stanford Online)
-• Full Stack Development (Meta)
-• Three.js Journey (Three.js Journey)`
+Certifications:
+→ Advanced Machine Learning (Stanford Online)
+→ Full Stack Development (Meta)
+→ Three.js Journey (Three.js Journey)`
     }
     else if (lowerMessage.includes('resume') || lowerMessage.includes('cv')) {
       response = `📄 **Resume Download**
 
 You can download Manish's resume by clicking the "Download Resume" button on the hero section, or type 'resume' in the terminal!
 
-**Quick Summary:**
-• 5+ years of experience
-• Expert in AI/ML & Full Stack
-• 20+ successful projects
-• Open to opportunities`
+Quick Summary:
+→ 5+ years of experience
+→ Expert in AI/ML & Full Stack
+→ 20+ successful projects
+→ Open to opportunities`
     }
     else if (lowerMessage.includes('award') || lowerMessage.includes('achievement') || lowerMessage.includes('recognition')) {
       response = `🏆 **Achievements & Recognition:**
 
-• 🥇 Best AI Innovation Award 2024
-• 📝 Published research paper on Neural Style Transfer
-• 🎯 Featured in "Top 30 Under 30 Developers" 2023
-• 💡 5+ Open Source Contributions
-• 🎤 Speaker at Tech Conference 2024
-• 📊 90+ Lighthouse score on all projects`
+→ Best AI Innovation Award 2024
+→ Published research paper on Neural Style Transfer
+→ Featured in "Top 30 Under 30 Developers" 2023
+→ 5+ Open Source Contributions
+→ Speaker at Tech Conference 2024
+→ 90+ Lighthouse score on all projects`
     }
     else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
       response = `🤖 **I can help you with:**
@@ -196,11 +197,11 @@ Just ask me anything about Manish! ✨`
 Congratulations! You found the super secret easter egg!
 
 🌟 You've unlocked:
-• Special access to Manish's private projects
-• Priority response from AI assistant
-• Exclusive behind-the-scenes content
+→ Special access to Manish's private projects
+→ Priority response from AI assistant
+→ Exclusive behind-the-scenes content
 
-✨ **Bonus**: Here's a sneak peek at an upcoming project:
+✨ Bonus: Here's a sneak peek at an upcoming project:
 "Next-gen AI platform for creative developers"
 
 Keep exploring for more surprises! 🔮`
@@ -208,11 +209,11 @@ Keep exploring for more surprises! 🔮`
     else {
       response = `🤔 That's an interesting question! While I'm still learning, let me share some highlights about Manish:
 
-**Quick Facts:**
-• 🎯 Specializes in AI/ML & 3D Web
-• 🚀 Built 20+ production applications
-• 📚 Passionate about teaching coding
-• 🌟 Always learning new technologies
+Quick Facts:
+→ Specializes in AI/ML & 3D Web
+→ Built 20+ production applications
+→ Passionate about teaching coding
+→ Always learning new technologies
 
 Want to know more? Try asking about:
 • "Tell me about your projects"
@@ -225,6 +226,23 @@ What would you like to explore? 💫`
     
     setIsThinking(false)
     return response
+  }
+
+  const formatMessage = (content) => {
+    // Simple formatting for bold text
+    const parts = content.split(/(\*\*[^*]+\*\*)/g)
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="text-accent-green">{part.slice(2, -2)}</strong>
+      }
+      // Handle line breaks
+      return part.split('\n').map((line, i) => (
+        <React.Fragment key={i}>
+          {line}
+          {i < part.split('\n').length - 1 && <br />}
+        </React.Fragment>
+      ))
+    })
   }
 
   const handleSendMessage = async () => {
@@ -344,24 +362,9 @@ What would you like to explore? 💫`
                         : 'glassmorphism border border-accent-cyan/20'
                     }`}
                   >
-                    {message.type === 'ai' ? (
-                      <div className="prose prose-invert prose-sm max-w-none">
-                        <ReactMarkdown
-                          components={{
-                            h1: ({node, ...props}) => <h1 className="text-accent-cyan text-lg font-bold mb-2" {...props} />,
-                            h2: ({node, ...props}) => <h2 className="text-accent-purple text-md font-semibold mb-1" {...props} />,
-                            strong: ({node, ...props}) => <strong className="text-accent-green" {...props} />,
-                            ul: ({node, ...props}) => <ul className="list-disc list-inside mt-1 mb-1" {...props} />,
-                            li: ({node, ...props}) => <li className="text-text/80 text-sm" {...props} />,
-                            p: ({node, ...props}) => <p className="text-text/90 text-sm mb-2" {...props} />,
-                          }}
-                        >
-                          {message.content}
-                        </ReactMarkdown>
-                      </div>
-                    ) : (
-                      <p className="text-primary text-sm font-medium">{message.content}</p>
-                    )}
+                    <div className="text-sm whitespace-pre-wrap">
+                      {message.type === 'ai' ? formatMessage(message.content) : message.content}
+                    </div>
                     <span className="text-[10px] opacity-60 block mt-1">
                       {new Date(message.timestamp).toLocaleTimeString()}
                     </span>
