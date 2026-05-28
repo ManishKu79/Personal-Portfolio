@@ -1,177 +1,211 @@
-// Simulated GitHub API service (replace with actual API calls later)
+// ============================================
+// REAL GITHUB API INTEGRATION
+// ============================================
+
+const GITHUB_USERNAME = 'https://github.com/ManishKu79' // Replace with your GitHub username
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN // Optional: Add token for higher rate limits
+
+// Real GitHub API calls
 export const githubService = {
-  async getUserStats(username = 'manishkumar') {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800))
-    
-    return {
-      username: username,
-      name: 'Manish Kumar',
-      avatar: 'https://github.com/github.png',
-      bio: 'AI/ML Developer & Full Stack Engineer passionate about building innovative solutions',
-      company: 'TechCorp AI Solutions',
-      location: 'Bangalore, India',
-      website: 'https://manishkumar.dev',
-      twitter: '@manishkumar',
-      followers: 1247,
-      following: 342,
-      publicRepos: 45,
-      totalStars: 1284,
-      totalForks: 342,
-      totalContributions: 1847,
-      contributionStreak: 15,
-      longestStreak: 28
+  async getUserStats() {
+    try {
+      const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+        headers: GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {}
+      })
+      
+      if (!response.ok) throw new Error('Failed to fetch user data')
+      const data = await response.json()
+      
+      // Fetch additional stats
+      const reposResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`, {
+        headers: GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {}
+      })
+      const repos = await reposResponse.json()
+      
+      // Calculate total stars
+      const totalStars = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0)
+      const totalForks = repos.reduce((acc, repo) => acc + repo.forks_count, 0)
+      
+      return {
+        username: data.login,
+        name: data.name || GITHUB_USERNAME,
+        avatar: data.avatar_url,
+        bio: data.bio || "AI/ML Developer & Full Stack Engineer",
+        company: data.company || "TechCorp AI Solutions",
+        location: data.location || "Bangalore, India",
+        website: data.blog,
+        twitter: data.twitter_username,
+        followers: data.followers,
+        following: data.following,
+        publicRepos: data.public_repos,
+        totalStars: totalStars,
+        totalForks: totalForks,
+        totalContributions: await getContributionsCount(),
+        contributionStreak: await getContributionStreak(),
+        longestStreak: await getLongestStreak()
+      }
+    } catch (error) {
+      console.error('Error fetching GitHub stats:', error)
+      return getMockUserStats() // Fallback to mock data if API fails
     }
   },
 
   async getRepositories() {
-    await new Promise(resolve => setTimeout(resolve, 600))
-    
-    return [
-      {
-        id: 1,
-        name: 'ai-portfolio',
-        description: 'Interactive 3D AI-powered portfolio with assistant and terminal',
-        language: 'JavaScript',
-        stars: 234,
-        forks: 56,
-        size: 12450,
-        updatedAt: '2024-02-15T10:30:00Z',
-        url: 'https://github.com/manishkumar/ai-portfolio'
-      },
-      {
-        id: 2,
-        name: 'neural-style-transfer',
-        description: 'Real-time artistic style transfer using deep neural networks',
-        language: 'Python',
-        stars: 456,
-        forks: 89,
-        size: 8920,
-        updatedAt: '2024-02-10T15:20:00Z',
-        url: 'https://github.com/manishkumar/neural-style-transfer'
-      },
-      {
-        id: 3,
-        name: 'predictive-analytics-dashboard',
-        description: 'ML-powered sales forecasting and analytics platform',
-        language: 'Python',
-        stars: 178,
-        forks: 34,
-        size: 15670,
-        updatedAt: '2024-02-05T09:15:00Z',
-        url: 'https://github.com/manishkumar/predictive-analytics'
-      },
-      {
-        id: 4,
-        name: '3d-product-configurator',
-        description: 'Real-time 3D product customization tool',
-        language: 'JavaScript',
-        stars: 312,
-        forks: 67,
-        size: 23450,
-        updatedAt: '2024-01-28T14:45:00Z',
-        url: 'https://github.com/manishkumar/3d-configurator'
-      },
-      {
-        id: 5,
-        name: 'sentiment-analysis-chatbot',
-        description: 'AI chatbot with emotion detection and sentiment analysis',
-        language: 'Python',
-        stars: 104,
-        forks: 23,
-        size: 6780,
-        updatedAt: '2024-01-20T11:00:00Z',
-        url: 'https://github.com/manishkumar/sentiment-chatbot'
-      }
-    ]
+    try {
+      const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=10`, {
+        headers: GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {}
+      })
+      
+      if (!response.ok) throw new Error('Failed to fetch repos')
+      const repos = await response.json()
+      
+      return repos.map(repo => ({
+        id: repo.id,
+        name: repo.name,
+        description: repo.description || "No description provided",
+        language: repo.language || "Unknown",
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        size: repo.size,
+        updatedAt: repo.updated_at,
+        url: repo.html_url
+      }))
+    } catch (error) {
+      console.error('Error fetching repositories:', error)
+      return []
+    }
   },
 
   async getContributions() {
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    const contributions = []
-    const today = new Date()
-    
-    for (let i = 364; i >= 0; i--) {
-      const date = new Date(today)
-      date.setDate(today.getDate() - i)
-      
-      // Generate realistic contribution pattern
-      let count = 0
-      const dayOfWeek = date.getDay()
-      const weekOfYear = Math.floor(i / 7)
-      
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        count = Math.floor(Math.random() * 5) // Weekends: 0-4 commits
-      } else if (weekOfYear < 10 || weekOfYear > 48) {
-        count = Math.floor(Math.random() * 8) // Off-season: 0-7 commits
-      } else {
-        count = Math.floor(Math.random() * 15) + 2 // Peak: 2-16 commits
-      }
-      
-      contributions.push({
-        date: date.toISOString().split('T')[0],
-        count: count,
-        level: count === 0 ? 0 : count < 4 ? 1 : count < 8 ? 2 : count < 12 ? 3 : 4
-      })
-    }
-    
-    return contributions
+    // This requires GitHub GraphQL API for contribution data
+    // For now, return mock data structure
+    return generateMockContributions()
   },
 
   async getLanguageStats() {
-    await new Promise(resolve => setTimeout(resolve, 400))
-    
-    return [
-      { name: 'JavaScript', value: 45, color: '#F7DF1E' },
-      { name: 'Python', value: 30, color: '#3776AB' },
-      { name: 'TypeScript', value: 15, color: '#3178C6' },
-      { name: 'HTML/CSS', value: 5, color: '#E34F26' },
-      { name: 'Others', value: 5, color: '#9CA3AF' }
-    ]
+    try {
+      const repos = await this.getRepositories()
+      const langStats = {}
+      
+      repos.forEach(repo => {
+        if (repo.language && repo.language !== 'Unknown') {
+          langStats[repo.language] = (langStats[repo.language] || 0) + 1
+        }
+      })
+      
+      const total = Object.values(langStats).reduce((a, b) => a + b, 0)
+      
+      return Object.entries(langStats).map(([name, value]) => ({
+        name,
+        value: Math.round((value / total) * 100),
+        color: getLanguageColor(name)
+      }))
+    } catch (error) {
+      console.error('Error fetching language stats:', error)
+      return []
+    }
   },
 
   async getRecentActivity() {
-    await new Promise(resolve => setTimeout(resolve, 300))
-    
-    return [
-      {
-        id: 1,
-        type: 'push',
-        repo: 'ai-portfolio',
-        message: 'Add AI assistant integration',
-        branch: 'main',
-        timestamp: '2024-02-15T10:30:00Z',
-        commits: 3
-      },
-      {
-        id: 2,
-        type: 'star',
-        repo: 'threejs-examples',
-        message: 'Starred threejs-examples',
-        timestamp: '2024-02-14T16:20:00Z'
-      },
-      {
-        id: 3,
-        type: 'pr',
-        repo: 'react-three-fiber',
-        message: 'Merged PR #123: Fix performance issues',
-        timestamp: '2024-02-13T09:45:00Z'
-      },
-      {
-        id: 4,
-        type: 'issue',
-        repo: 'ai-portfolio',
-        message: 'Opened issue #5: Add dark mode toggle',
-        timestamp: '2024-02-12T14:10:00Z'
-      },
-      {
-        id: 5,
-        type: 'fork',
-        repo: 'awesome-machine-learning',
-        message: 'Forked awesome-machine-learning',
-        timestamp: '2024-02-11T11:30:00Z'
-      }
-    ]
+    try {
+      const eventsResponse = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/events?per_page=10`, {
+        headers: GITHUB_TOKEN ? { Authorization: `token ${GITHUB_TOKEN}` } : {}
+      })
+      
+      if (!eventsResponse.ok) throw new Error('Failed to fetch events')
+      const events = await eventsResponse.json()
+      
+      return events.map(event => ({
+        id: event.id,
+        type: event.type.replace('Event', '').toLowerCase(),
+        repo: event.repo.name.split('/')[1],
+        message: getEventMessage(event),
+        timestamp: event.created_at
+      }))
+    } catch (error) {
+      console.error('Error fetching recent activity:', error)
+      return []
+    }
   }
+}
+
+// Helper functions
+const getLanguageColor = (language) => {
+  const colors = {
+    JavaScript: '#F7DF1E',
+    Python: '#3776AB',
+    TypeScript: '#3178C6',
+    HTML: '#E34F26',
+    CSS: '#1572B6',
+    Java: '#007396',
+    Go: '#00ADD8',
+    Rust: '#DEA584'
+  }
+  return colors[language] || '#9CA3AF'
+}
+
+const getEventMessage = (event) => {
+  switch (event.type) {
+    case 'PushEvent':
+      return `Pushed ${event.payload.commits.length} commits`
+    case 'CreateEvent':
+      return `Created ${event.payload.ref_type}`
+    case 'WatchEvent':
+      return `Starred repository`
+    case 'ForkEvent':
+      return `Forked repository`
+    default:
+      return `Performed ${event.type}`
+  }
+}
+
+// Helper functions for contribution stats
+const getContributionsCount = async () => {
+  // Implement GraphQL query for contribution count
+  return 1847 // Placeholder
+}
+
+const getContributionStreak = async () => {
+  return 15 // Placeholder
+}
+
+const getLongestStreak = async () => {
+  return 28 // Placeholder
+}
+
+// Mock data for fallback
+const getMockUserStats = () => ({
+  username: GITHUB_USERNAME,
+  name: "Your Name",
+  avatar: "https://github.com/github.png",
+  bio: "Your bio here",
+  company: "Your Company",
+  location: "Your Location",
+  followers: 100,
+  following: 50,
+  publicRepos: 20,
+  totalStars: 500,
+  totalForks: 100,
+  totalContributions: 1000,
+  contributionStreak: 10,
+  longestStreak: 20
+})
+
+const generateMockContributions = () => {
+  const contributions = []
+  const today = new Date()
+  
+  for (let i = 364; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(today.getDate() - i)
+    const count = Math.floor(Math.random() * 10)
+    
+    contributions.push({
+      date: date.toISOString().split('T')[0],
+      count: count,
+      level: count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 9 ? 3 : 4
+    })
+  }
+  
+  return contributions
 }

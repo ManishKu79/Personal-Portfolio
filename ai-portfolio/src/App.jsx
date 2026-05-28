@@ -1,4 +1,5 @@
-import React, { useEffect, Suspense, lazy } from 'react'
+// src/App.jsx - COMPLETELY FIXED VERSION
+import React, { useEffect, Suspense, lazy, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Lenis from '@studio-freight/lenis'
 import LoadingScreen from './components/ui/LoadingScreen'
@@ -10,7 +11,7 @@ import AssistantToggle from './components/assistant/AssistantToggle'
 import useStore from './store/useStore'
 import { useResponsive } from './hooks/useResponsive'
 
-// Lazy load sections for performance
+// Lazy load sections
 const HeroSection = lazy(() => import('./sections/HeroSection'))
 const TerminalSection = lazy(() => import('./sections/TerminalSection'))
 const AssistantSection = lazy(() => import('./sections/AssistantSection'))
@@ -31,35 +32,59 @@ const queryClient = new QueryClient({
 function App() {
   const { isLoading, setLoading } = useStore()
   const { isMobile } = useResponsive()
+  const [shouldRender, setShouldRender] = useState(false)
 
   useEffect(() => {
-    // Initialize Lenis smooth scroll
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      smoothTouch: false,
-      touchMultiplier: 2,
-    })
+    // Small delay to ensure DOM is ready
+    setTimeout(() => setShouldRender(true), 100)
+  }, [])
 
-    function raf(time) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+  useEffect(() => {
+    let lenis = null
+    let rafId = null
+
+    const initSmoothScroll = () => {
+      if (typeof window !== 'undefined') {
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          gestureOrientation: 'vertical',
+          smoothWheel: true,
+          smoothTouch: false,
+          touchMultiplier: 2,
+          infinite: false,
+        })
+
+        function raf(time) {
+          if (lenis) {
+            lenis.raf(time)
+          }
+          rafId = requestAnimationFrame(raf)
+        }
+
+        rafId = requestAnimationFrame(raf)
+      }
     }
 
-    requestAnimationFrame(raf)
+    initSmoothScroll()
 
-    const loadingTimer = setTimeout(() => setLoading(false), 3000)
+    const loadingTimer = setTimeout(() => {
+      setLoading(false)
+    }, 2500)
 
     return () => {
-      lenis.destroy()
+      if (lenis) {
+        lenis.destroy()
+      }
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+      }
       clearTimeout(loadingTimer)
     }
   }, [setLoading])
 
-  if (isLoading) {
+  if (isLoading || !shouldRender) {
     return <LoadingScreen />
   }
 
@@ -73,7 +98,7 @@ function App() {
       <div className="relative bg-primary overflow-x-hidden">
         <Suspense fallback={
           <div className="fixed inset-0 bg-primary z-50 flex items-center justify-center">
-            <div className="text-accent-cyan font-mono">Loading Modules...</div>
+            <div className="text-accent-cyan font-mono animate-pulse">Loading...</div>
           </div>
         }>
           <HeroSection />

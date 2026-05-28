@@ -1,50 +1,53 @@
-import React, { useEffect, useState } from 'react'
+// src/components/ui/CustomCursor.jsx - FIXED
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { useMousePosition } from '../../hooks/useMousePosition'
 
 const CustomCursor = () => {
   const [isHovering, setIsHovering] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
-  const mousePosition = useMousePosition()
+  const cursorRef = useRef(null)
 
   const cursorX = useMotionValue(0)
   const cursorY = useMotionValue(0)
 
-  const springConfig = { damping: 25, stiffness: 700 }
+  const springConfig = { damping: 25, stiffness: 700, mass: 0.5 }
   const cursorXSpring = useSpring(cursorX, springConfig)
   const cursorYSpring = useSpring(cursorY, springConfig)
 
-  useEffect(() => {
-    cursorX.set(mousePosition.x - 16)
-    cursorY.set(mousePosition.y - 16)
-  }, [mousePosition, cursorX, cursorY])
+  const updateMousePosition = useCallback((e) => {
+    cursorX.set(e.clientX - 16)
+    cursorY.set(e.clientY - 16)
+  }, [cursorX, cursorY])
 
   useEffect(() => {
     setIsVisible(true)
-    
+    window.addEventListener('mousemove', updateMousePosition)
+
     const handleMouseEnter = () => setIsHovering(true)
     const handleMouseLeave = () => setIsHovering(false)
 
-    const interactiveElements = document.querySelectorAll('button, a, input, [role="button"]')
+    const interactiveElements = document.querySelectorAll('button, a, input, [role="button"], .magnetic-button')
     interactiveElements.forEach(el => {
       el.addEventListener('mouseenter', handleMouseEnter)
       el.addEventListener('mouseleave', handleMouseLeave)
     })
 
     return () => {
+      window.removeEventListener('mousemove', updateMousePosition)
       interactiveElements.forEach(el => {
         el.removeEventListener('mouseenter', handleMouseEnter)
         el.removeEventListener('mouseleave', handleMouseLeave)
       })
     }
-  }, [])
+  }, [updateMousePosition])
 
   if (!isVisible) return null
 
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[999] mix-blend-difference"
+        ref={cursorRef}
+        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[999]"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
