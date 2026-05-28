@@ -2,7 +2,9 @@ import React, { useEffect, Suspense, lazy } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Lenis from '@studio-freight/lenis'
 import LoadingScreen from './components/ui/LoadingScreen'
+import CustomCursor from './components/ui/CustomCursor'
 import useStore from './store/useStore'
+import { useResponsive } from './hooks/useResponsive'
 
 // Lazy load sections for performance
 const HeroSection = lazy(() => import('./sections/HeroSection'))
@@ -18,14 +20,13 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 5,
       refetchOnWindowFocus: false,
       retry: 1,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
     },
   },
 })
 
 function App() {
   const { isLoading, setLoading } = useStore()
+  const { isMobile } = useResponsive()
 
   useEffect(() => {
     // Initialize Lenis smooth scroll
@@ -37,7 +38,6 @@ function App() {
       smoothWheel: true,
       smoothTouch: false,
       touchMultiplier: 2,
-      infinite: false,
     })
 
     function raf(time) {
@@ -47,13 +47,11 @@ function App() {
 
     requestAnimationFrame(raf)
 
-    // Simulate loading completion
     const loadingTimer = setTimeout(() => setLoading(false), 3000)
 
     return () => {
       lenis.destroy()
       clearTimeout(loadingTimer)
-      cancelAnimationFrame(raf)
     }
   }, [setLoading])
 
@@ -63,6 +61,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {!isMobile && <CustomCursor />}
       <div className="relative bg-primary overflow-x-hidden">
         <Suspense fallback={
           <div className="fixed inset-0 bg-primary z-50 flex items-center justify-center">
