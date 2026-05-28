@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Lenis from '@studio-freight/lenis'
 import LoadingScreen from './components/ui/LoadingScreen'
 import CustomCursor from './components/ui/CustomCursor'
+import Terminal from './components/terminal/Terminal'
+import TerminalToggle from './components/terminal/TerminalToggle'
 import useStore from './store/useStore'
 import { useResponsive } from './hooks/useResponsive'
 
@@ -62,6 +64,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {!isMobile && <CustomCursor />}
+      <Terminal />
+      <TerminalToggle />
       <div className="relative bg-primary overflow-x-hidden">
         <Suspense fallback={
           <div className="fixed inset-0 bg-primary z-50 flex items-center justify-center">

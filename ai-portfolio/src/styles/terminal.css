@@ -1,0 +1,59 @@
+@keyframes matrix-rain {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.matrix-text {
+  animation: matrix-rain 0.1s linear;
+  color: #00FFB2;
+  text-shadow: 0 0 5px #00FFB2;
+  display: inline-block;
+}
+
+@keyframes border-flow {
+  0%, 100% {
+    border-color: #00F5FF;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+  }
+  25% {
+    border-color: #7B2FF7;
+    box-shadow: 0 0 20px rgba(123, 47, 247, 0.3);
+  }
+  50% {
+    border-color: #00FFB2;
+    box-shadow: 0 0 20px rgba(0, 255, 178, 0.3);
+  }
+  75% {
+    border-color: #FF00FF;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+  }
+}
+
+.animate-border-flow {
+  animation: border-flow 2s ease infinite;
+}
+
+/* Custom scrollbar for terminal */
+.terminal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 245, 255, 0.1);
+  border-radius: 3px;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 255, 0.5);
+  border-radius: 3px;
+}
+
+.terminal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 255, 0.8);
+}
