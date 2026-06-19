@@ -1,4 +1,4 @@
-// src/scenes/HeroScene.jsx - FIXED with proper error handling
+
 import React, { Suspense, useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei'
