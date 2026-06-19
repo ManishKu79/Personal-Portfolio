@@ -1,4 +1,4 @@
-// src/components/animations/TypewriterText.jsx - FIXED
+
 import React, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 
